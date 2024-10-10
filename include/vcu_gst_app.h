@@ -35,6 +35,7 @@
 #define LOW_BITRATE           10000
 #define MEDIUM_BITRATE        30000
 #define HIGH_BITRATE          60000
+#define DEFAULT_BITRATE		  40000
 
 #define DEFAULT_DISPLAY_RATE  60
 #define DEFAULT_NUM_SLICE     8
@@ -42,7 +43,7 @@
 #define BYTE_TO_GBIT          (8 / 1000000000.0)
 #define BIT_TO_MBIT(value)    (value/1000000.0)
 #define BIT_TO_KBIT(value)    (value/1000.0)
-#define MAX_NUM_SOURCES       8
+#define MAX_NUM_SOURCES       1//8
 #define MIN_NUM_SOURCES       1
 #define MAX_WIDTH             3840
 #define MAX_HEIGHT            2160
@@ -50,11 +51,14 @@
 #define MAX_RECORD_DUR        3
 #define DEFAULT_INFO_INTERVAL 1
 #define DEFAULT_RELATIVE_QP   -21
+#define NUM_GST_CHANNELS 2
 
 typedef struct _App {
+  guint channel;
   FILE *file;
   gchar line[512];
   GMainLoop *loop;
+  GMainContext *loop_main_context;
   gboolean fps_info, apm_info, pipeline_info, update_bitrate[MAX_NUM_SOURCES], loop_playback;
   guint fps[2];
   gint64 position;
@@ -66,4 +70,9 @@ typedef struct _App {
   vgst_aud_params audParam[MAX_NUM_SOURCES];
 }App;
 
+gint vgst_app_init (gboolean standalone, gint argc, gchar *argv[]);
+void vgst_app_deinit (guint channel);
+gint vgst_app_start_encode(gint channel);
+gint vgst_app_stop_encode(guint channel);
+gint vcu_gst_app_main (gint argc, gchar *argv[]);
 #endif /* INCLUDE_VCU_GST_APP_H_ */
